@@ -62,3 +62,19 @@ CREATE TABLE IF NOT EXISTS notification_logs (
 CREATE INDEX IF NOT EXISTS idx_users_ref_code ON users(ref_code);
 CREATE INDEX IF NOT EXISTS idx_users_main_chat ON users(main_chat_id);
 CREATE INDEX IF NOT EXISTS idx_notification_logs_user ON notification_logs(user_id);
+
+-- Таблица чатов бота (для отслеживания)
+CREATE TABLE IF NOT EXISTS bot_chats (
+    chat_id INTEGER PRIMARY KEY,
+    chat_type TEXT,
+    title TEXT,
+    added_at INTEGER
+);
+
+-- Таблица администраторов чатов
+CREATE TABLE IF NOT EXISTS chat_admins (
+    chat_id INTEGER,
+    user_id INTEGER,
+    is_admin BOOLEAN DEFAULT 1,
+    PRIMARY KEY (chat_id, user_id)
+);

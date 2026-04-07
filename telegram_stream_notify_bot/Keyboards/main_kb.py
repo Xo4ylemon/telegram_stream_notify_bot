@@ -17,7 +17,7 @@ def get_main_keyboard(is_premium: bool = False, monitor_active: bool = True) -> 
             [KeyboardButton(text="🖼 Баннер уведомления")],
             [KeyboardButton(text="🔔 Уведомления")],
             [KeyboardButton(text="⏱ Кулдауны"), KeyboardButton(text="👥 Реферальная система")],
-            [KeyboardButton(text="📊 Статистика")],
+            [KeyboardButton(text="📊 Статистика"), KeyboardButton(text="📨 Тест уведомления")],
             [KeyboardButton(text="🗑 Удалить все данные"), KeyboardButton(text="🔄 Перезапустить бота")]
         ],
         resize_keyboard=True

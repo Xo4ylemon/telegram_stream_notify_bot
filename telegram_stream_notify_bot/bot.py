@@ -1,19 +1,8 @@
 import asyncio
 import logging
-import sys
-from pathlib import Path
-
-# Добавляем текущую папку в PYTHONPATH
-sys.path.insert(0, str(Path(__file__).parent))
-
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
 from config import BOT_TOKEN
-
-# Импортируем роутеры
-from Handlers.start import router as start_router
-from Handlers.menu import router as menu_router
 
 # Настройка логирования
 logging.basicConfig(
@@ -22,8 +11,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Инициализация бота - НЕ ставим parse_mode по умолчанию
-bot = Bot(token=BOT_TOKEN)
+# Инициализация бота и диспетчера
+# УБИРАЕМ parse_mode по умолчанию
+bot = Bot(token=BOT_TOKEN)  # Убрали parse_mode="MarkdownV2"
 dp = Dispatcher()
 
 
@@ -31,9 +21,12 @@ async def main():
     """Главная функция запуска бота"""
     logger.info("Бот запускается...")
 
-    # Регистрируем все роутеры
-    dp.include_router(start_router)
-    dp.include_router(menu_router)
+    # Импортируем роутеры здесь, чтобы избежать циклических импортов
+    from Handlers import start, menu, chats
+
+    dp.include_router(start.router)
+    dp.include_router(menu.router)
+    dp.include_router(chats.router)
 
     try:
         await dp.start_polling(bot)

@@ -115,6 +115,49 @@ async def show_stats(message: Message):
     await message.answer(text)
 
 
+@router.message(F.text == "📨 Тест уведомления")
+async def test_notification_handler(message: Message):
+    """Отправить тестовое уведомление во все чаты"""
+    user_id = message.from_user.id
+    user = UserDB.get_user(user_id)
+
+    main_chat = user.get("main_chat_id")
+    extra_chats = user.get("extra_chats", [])
+    all_chats = [main_chat] + extra_chats if main_chat else extra_chats
+
+    if not all_chats:
+        await message.answer(
+            "❌ Нет привязанных чатов.\n\n"
+            "Сначала добавьте основной чат через раздел '📢 Основной чат'"
+        )
+        return
+
+    # Отправляем тестовое уведомление (БЕЗ Markdown)
+    success_count = 0
+    failed_chats = []
+
+    for chat_id in all_chats:
+        try:
+            await message.bot.send_message(
+                chat_id,
+                "🧪 ТЕСТОВОЕ УВЕДОМЛЕНИЕ\n\n"
+                "Если вы видите это сообщение, значит бот правильно настроен и может отправлять уведомления!\n\n"
+                "✅ Канал: test_channel\n"
+                "🎮 Игра: Test Game\n"
+                "👉 Ссылка: https://twitch.tv/example"
+            )
+            success_count += 1
+        except Exception as e:
+            failed_chats.append(f"{chat_id} ({str(e)[:50]})")
+
+    result_text = f"✅ Тестовое уведомление отправлено в {success_count}/{len(all_chats)} чатов.\n\n"
+    if failed_chats:
+        result_text += f"❌ Ошибки в чатах: {', '.join(failed_chats)}\n\n"
+    result_text += "Проверьте чаты, где я добавлен и есть права администратора."
+
+    await message.answer(result_text)
+
+
 @router.message(F.text == "🗑 Удалить все данные")
 async def confirm_delete(message: Message):
     await message.answer("⚠️ Отправьте DELETE_ME для подтверждения")
