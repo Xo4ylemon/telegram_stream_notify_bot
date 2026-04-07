@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from typing import Optional
 from config import DB_PATH
 
@@ -12,9 +13,15 @@ class Database:
 
     def _init_db(self):
         """Инициализация БД - создание таблиц"""
+        # Создаем директорию для БД если её нет
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+
         with sqlite3.connect(self.db_path) as conn:
-            with open("DataBase/migrations/init.sql", "r", encoding="utf-8") as f:
-                conn.executescript(f.read())
+            # Проверяем, существует ли файл init.sql
+            init_sql_path = "DataBase/migrations/init.sql"
+            if os.path.exists(init_sql_path):
+                with open(init_sql_path, "r", encoding="utf-8") as f:
+                    conn.executescript(f.read())
 
     def get_connection(self):
         """Получить соединение с БД"""
