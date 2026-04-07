@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from DataBase.users import UserDB  # Убрали точки
+from DataBase.users import UserDB
 from Keyboards.main_kb import get_main_keyboard
 
 router = Router()
@@ -20,19 +20,18 @@ async def cmd_start(message: Message):
     # Создаем или получаем пользователя
     user = UserDB.create_user(user_id, ref_code)
 
-    # Отправляем приветственное сообщение
+    # Отправляем приветственное сообщение (без Markdown)
     welcome_text = (
-        "🎉 *Добро пожаловать в Stream Notifications Bot\\!*\n\n"
-        "Я буду уведомлять тебя о начале стримов на *Twitch* и *VK Live*\\.\n\n"
-        "📌 *Что нужно сделать:*\n"
+        "🎉 Добро пожаловать в Stream Notifications Bot!\n\n"
+        "Я буду уведомлять тебя о начале стримов на Twitch и VK Live.\n\n"
+        "📌 Что нужно сделать:\n"
         "1️⃣ Привязать Twitch или VK канал\n"
         "2️⃣ Выбрать основной чат для уведомлений\n"
         "3️⃣ Настроить типы уведомлений\n\n"
-        "👉 Используй кнопки ниже для настройки\\."
+        "👉 Используй кнопки ниже для настройки."
     )
 
     await message.answer(
         welcome_text,
-        reply_markup=get_main_keyboard(),
-        parse_mode="MarkdownV2"
+        reply_markup=get_main_keyboard()
     )
